@@ -9,13 +9,15 @@
 <body>
     <form action="/addword" method="POST">
         <label for="word">Word:</label><br>
-        <input type="text" id="word" name="word"><br>
+        <input type="text" id="word" name="word" required><br>
         <label for="def">Definition: </label><br>
-        <input type="text" id="def" name="def"><br>
+        <input type="text" id="def" name="def" required><br>
         <label for="exp">Explanation: (optional)</label><br>
         <input type="text" id="exp" name="exp"><br>
+        <label for="userHandle">userHandle:</label><br>
+        <input type="text" id="userHandle" name="userHandle" required><br>
         <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email"><br>
+        <input type="email" id="email" name="email" required><br>
         <input type="submit" value="submit">
       </form>
       
