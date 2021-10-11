@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+<div class="card">
+    <form>
+        <div id="word">
+            <p>
+
+                ACID
+            </p>
+        </div>
+        <div id="definition">
+            <p>
+
+                Definition
+            </p>
+        </div>
+        <div id="exp">
+            <p>
+
+                Explanation
+            </p>
+        </div>
+        <div id="upvote">
+            <p>
+                
+                upvote
+            </p>
+        </div>
+        <div id="downvote">
+            <p>
+
+                downvote
+            </p>
+        </div>
+    </form>
+</div>
+
+{{ json_words }}
+{% endblock content %}
