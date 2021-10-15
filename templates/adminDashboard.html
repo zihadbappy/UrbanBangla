@@ -1,7 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
     {%for word in json_words%}
-        {% if(word['approved']=="false"): %}
             <div class="container">
                 <div class="row">
                     <div class="col col-lg-8">
@@ -45,6 +44,15 @@
                         </div>
                         <div class="row">
                             <div class="col">
+                                <div id="upvote">
+                                    <p>
+                                        handle : {{word['email']}}
+                                    </p>
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col">
                                         {% set wordID= word['_id']['$oid'] %}
                                     <form action="{{url_for('approve_word', word_id=wordID )}}" method="POST">
                                     <button type="submit">Approve</button>
@@ -55,7 +63,6 @@
                 </div>
             </div>
             </div>
-        {% endif %}
     {% endfor %}
     {{ json_words }}
     {% endblock content %}
