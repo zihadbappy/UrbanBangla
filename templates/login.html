@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container">
+    <form action="{{url_for('userlogin')}}" method="GET" style="margin-top: 5rem;">
+    <button class="form-control-label">Login</button>
+</form>
+</div>
+{% endblock content %}
