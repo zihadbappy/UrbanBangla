@@ -1,42 +1,66 @@
-{% extends 'layout.html' %}
-{% block content %}
+{% extends 'layout.html' %} {% block content %}
 <div class="container">
-{% if not session.get('name')%}
-        <div style="margin-top: 5rem;"><h3>Please Login to submit word</h3>
-            <form action="{{url_for('userlogin')}}" method="GET" style="margin-top: 5rem;">
-                <button class="form-control-label">Login</button>
-            </form>
-            </div>
-{% endif %}
-
-{% if session['name']%}
-    <div style="margin-top: 5rem;"><h3>Logged in as, {{session['name']}}</h3>
-    <form action="{{url_for('userlogout')}}" method="GET" style="margin-top: 5rem;">
-    <button class="form-control-label">Logout</button>
+  {% if not session.get('name')%}
+  <div style="margin-top: 5rem">
+    <h3>Please Login to submit word</h3>
+    <form
+      action="{{url_for('userlogin')}}"
+      method="GET"
+      style="margin-top: 5rem"
+    >
+      <button class="form-control-label">Login</button>
     </form>
-    </div>
-{% endif %}
+  </div>
+  {% endif %} {% if session['name']%}
+  <div style="margin-top: 5rem">
+    <h3>Logged in as, {{session['name']}}</h3>
+    <form
+      action="{{url_for('userlogout')}}"
+      method="GET"
+      style="margin-top: 5rem"
+    >
+      <button class="form-control-label">Logout</button>
+    </form>
+  </div>
+  {% endif %}
 
-    <div style="margin-top: 3rem;">
-
-        <form action="/addword" method="POST" >
-            <div class="form-group row">
-                <label for="word" class="col-sm-2">Word:</label><br>
-                <input type="text" class="form-control-label col-sm-6" id="word" name="word" required><br>
-        </div>
-        <div class="form-group row">
-            <label for="def" class="col-sm-2">Definition: </label><br>
-            <textarea type="text" id="def" class="form-control-label col-sm-6"
-            style="height: 4rem;" name="def" required contenteditable>
+  <div style="margin-top: 3rem">
+    <form action="/addword" method="POST">
+      <div class="form-group row">
+        <label for="word" class="col-sm-2">Word:</label><br />
+        <input
+          type="text"
+          class="form-control-label col-sm-6"
+          id="word"
+          name="word"
+          required
+        /><br />
+      </div>
+      <div class="form-group row">
+        <label for="def" class="col-sm-2">Definition: </label><br />
+        <textarea
+          type="text"
+          id="def"
+          class="form-control-label col-sm-6"
+          style="height: 4rem"
+          name="def"
+          required
+          contenteditable
+        >
         </textarea>
-        <br>
-    </div>
-    <div class="form-group row">
-        <label for="exp" class="col-sm-2">Explanation: (optional)</label><br>
-        <input type="text" id="exp" class="form-control-label col-sm-6" name="exp"><br>
-    </div>
-    <input type="submit" value="submit">
-</form>
-</div>
+        <br />
+      </div>
+      <div class="form-group row">
+        <label for="exp" class="col-sm-2">Explanation: (optional)</label><br />
+        <input
+          type="text"
+          id="exp"
+          class="form-control-label col-sm-6"
+          name="exp"
+        /><br />
+      </div>
+      <input type="submit" value="submit" />
+    </form>
+  </div>
 </div>
 {% endblock content %}

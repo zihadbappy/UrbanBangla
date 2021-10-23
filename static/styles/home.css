@@ -1,4 +1,5 @@
 body{
+    background-color:  rgb(234, 238, 238);
 }
 
 #card{
@@ -6,40 +7,41 @@ body{
     margin-left: auto;
     margin-right: auto;
     align-items: center;
-    margin-top: 5rem;
+    margin-top: 4rem;
+    background-color: white;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 
 #exp{
     
-    background: #FFFFFF;
 
 }
 
 
 #definition{
-    background: #FFFFFF;
-    box-sizing: border-box;
+     box-sizing: border-box;
     
 }
- 
+
 
 #word{
-    border: 0.773498px solid rgba(0, 0, 0, 0.5);
-    
+color:blue;
+font-size: 2rem;
+font-family:'Rubik'
 }
     
  
 #upvote
 {
-background: #FFFFFF;
-border: 0.773498px solid rgba(0, 0, 0, 0.5);
 }
 
 
 
 #downvote
-{
-border: 0.773498px solid rgba(0, 0, 0, 0.5);
+{border: 0.773498px solid rgba(0, 0, 0, 0.5);
 }
 

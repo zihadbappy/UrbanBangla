@@ -3,9 +3,7 @@
     {%for word in json_words%}
             <div class="container">
                 <div class="row">
-                    <div class="col col-lg-8">
-                        <div id="card" > 
-                            
+                    <div id="card" class="col col-md-8 col-lg-6">                            
                             <div class="row">
                                 <div class="col">
                                     <div id="word">
@@ -14,7 +12,7 @@
                                         </p>
                                     </div>
                             </div>
-                        </div>
+                            </div>
                         <div class="row">
                             <div class="col">
                                 <div id="definition">
@@ -37,7 +35,7 @@
                             <div class="col">
                                 <div id="upvote">
                                     <p>
-                                        handle : {{word['userHandle']}}
+                                        Handle : {{word['userHandle']}}
                                     </p>
                                 </div>
                             </div> 
@@ -46,7 +44,7 @@
                             <div class="col">
                                 <div id="upvote">
                                     <p>
-                                        handle : {{word['email']}}
+                                        Email : {{word['email']}}
                                     </p>
                                 </div>
                             </div> 
@@ -55,8 +53,8 @@
                             <div class="col">
                                         {% set wordID= word['_id']['$oid'] %}
                                     <form action="{{url_for('approve_word', word_id=wordID )}}" method="POST">
-                                    <button type="submit">Approve</button>
-                                </form>
+                                    <button class="btn btn-primary" type="submit">Approve</button>
+                                </form> 
                         </div>
                         </div>
                     </div>
@@ -64,5 +62,4 @@
             </div>
             </div>
     {% endfor %}
-    {{ json_words }}
     {% endblock content %}
