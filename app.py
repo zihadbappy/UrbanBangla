@@ -83,19 +83,28 @@ def dash():
     print(colored(json_words,'yellow'))
     return render_template('adminDashboard.html',json_words=json_words)
 
-@app.route("/adminDashboard/<word_id>/", methods=['POST'])
-def approve_word(word_id):
+@app.route("/adminDashboard/<action>/<word_id>/", methods=['POST'])
+def approve_word(action, word_id):
     oid = ObjectId(word_id)
-    print(colored(oid, 'green'))
-    # wordID= db.words.count_documents({"_id": {"$oid":"6162ef8d8dbc49ec785c61c8"}})
-    id= db.words.find({"_id": {"$eq": oid}})
-    id= json.loads(dumps(id, default=json_util.default))
-    print(colored(id,'red'))
+    if(action=="approve"):
+        # wordID= db.words.count_documents({"_id": {"$oid":"6162ef8d8dbc49ec785c61c8"}})
+        id= db.words.find({"_id": {"$eq": oid}})
+        id= json.loads(dumps(id, default=json_util.default))
+        print(colored(id,'red'))
+        if(id is not None):
+            db.words.update_one(
+            {"_id":{"$eq":oid}},
+            {'$set': {"status":"approved"}})
+    if(action=="decline"):
 
-    if(id is not None):
-        db.words.update_one(
-        {"_id":{"$eq":oid}},
-        {'$set': {"status":"approved"}})
+        id= db.words.find({"_id": {"$eq": oid}})
+        id= json.loads(dumps(id, default=json_util.default))
+        print(colored(id,'red'))
+        if(id is not None):
+            db.words.update_one(
+            {"_id":{"$eq":oid}},
+            {'$set': {"status":"declined"}})
+    
     return redirect('/adminDashboard')
 
 
