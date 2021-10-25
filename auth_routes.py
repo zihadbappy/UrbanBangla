@@ -6,7 +6,7 @@ from app import app
 import os
 import pathlib
 import requests
-from flask import Flask, session, abort, redirect, request
+from flask import Flask, session,flash, abort, redirect, request
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
@@ -82,4 +82,5 @@ def userlogout():
 @app.route('/user/protected_area', methods=['GET'])
 @login_is_required
 def protected_area():
+    flash("logged in successfully")
     return redirect('/addword')

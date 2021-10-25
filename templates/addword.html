@@ -24,7 +24,7 @@
   </div>
   {% endif %}
 
-  <div style="margin-top: 3rem">
+  <div style="margin-top: 2rem">
     <form action="/addword" method="POST">
       <div class="form-group row">
         <label for="word" class="col-sm-2">Word:</label><br />
@@ -42,22 +42,22 @@
           type="text"
           id="def"
           class="form-control-label col-sm-6"
-          style="height: 4rem"
+          style="height: 4rem; margin-top: 2rem;"
           name="def"
           required
-          contenteditable
-        >
-        </textarea>
+        ></textarea>
         <br />
       </div>
       <div class="form-group row">
         <label for="exp" class="col-sm-2">Explanation: (optional)</label><br />
-        <input
+        <textarea
           type="text"
           id="exp"
           class="form-control-label col-sm-6"
-          name="exp"
-        /><br />
+          style="height: 4rem"
+          name="exp"></textarea>
+
+        <br />
       </div>
       <input type="submit" value="submit" />
     </form>

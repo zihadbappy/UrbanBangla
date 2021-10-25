@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, render_template,redirect, session
+from flask import Flask, flash, jsonify, request, render_template,redirect, session
 from flask.helpers import url_for
 import traceback
 import sys
@@ -36,9 +36,19 @@ except pymongo.errors.ConnectionFailure as e:
 
 @app.route("/")
 def get_words():
+    # aggregatedCur = db.words.aggregate(
+    #     [
+    #         {
+    #         '$project':{
+    #         'date':{'$toDate': "$postedDate" } }
+    #         }
+    #     ]
+    # )
+    # aggregatedList = list(aggregatedCur)
+    # print(colored(aggregatedList,'yellow'))    
+
     words=list(db.words.find({"status":"approved"}))
     json_words= json.loads(json.dumps(words, default=json_util.default))
-    print(colored(json_words,'yellow'))
     return render_template('home.html',json_words=json_words)
     # return json.dumps(words, default=json_util.default)
 

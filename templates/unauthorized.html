@@ -1,11 +1,17 @@
+
 {% extends 'layout.html' %}
 {% block content %}
 <div class="container">
-    <h3>
-        Please login to continue...
-    </h3>
-    <form action="{{url_for('userlogin')}}" method="GET" style="margin-top: 5rem;">
-    <button class="form-control-label">Login</button>
-</form>
+    <div class="row" >   
+        <div  id="loginCard" class="col col-sm-12 col-md-8 col-lg-6 mx-lg-auto">
+            <p>
+                        Please login with Google ID to continue
+                    </p>
+                  <form action="{{url_for('userlogin')}}" id="loginForm" method="GET">
+                    <button class="form-control-label btn-lg btn-primary col-4">Go</button>
+                </form>
+                </div>
+    </div>
 </div>
+
 {% endblock content %}
