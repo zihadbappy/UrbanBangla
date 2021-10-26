@@ -10,20 +10,21 @@ body{
     } */
 
 .nav-item .nav-link{
-    color: white;
+    color: black;
 }
 .navbar-brand{
-    color: white;
+    color: black;
+    font-size: 2.5rem;
 }
 
 .navbar{
-    background-color: rgb(32, 128, 253);
-    border-color: #0066eb;
+    background-color: white;
+    border-color: rgb(32, 128, 253);
     border-width: 0px 0px 4px 1px;
 }
 
 @media screen and (min-width: 980px) {
-#nav .container{
+#nav .container{    
 margin: 0 100px;
 }
 }
@@ -40,6 +41,7 @@ margin: 0 550px;
 
 
 #nav{
+    height: 5rem;
     align-items: center;
     text-align: center;
     justify-content: center;
