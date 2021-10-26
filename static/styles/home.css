@@ -10,17 +10,17 @@ body{
     } */
 
 .nav-item .nav-link{
-    color: black;
+    color: white;
 }
 .navbar-brand{
-    color: black;
+    color: white;
     font-size: 2.5rem;
 }
 
 .navbar{
-    background-color: white;
-    border-color: rgb(32, 128, 253);
-    border-width: 0px 0px 4px 1px;
+    background-color: rgb(32, 128, 253);
+    border-color: rgb(6, 43, 255);
+    border-width: 0px 0px 2px 0px;
 }
 
 @media screen and (min-width: 980px) {
@@ -39,8 +39,12 @@ margin: 0 550px;
 }
 }
 
+#nav a:hover{
+    color:rgb(0, 0, 0);
+}
 
 #nav{
+    
     height: 5rem;
     align-items: center;
     text-align: center;

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins&family=Rubik&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,600;1,200&family=Ubuntu&family=Zen+Kurenaido&family=Zen+Old+Mincho:wght@700&display=swap"
       rel="stylesheet"
     />
+    <link rel="shortcut icon" href="static/styles/logo/favicon.ico" />
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -25,7 +27,9 @@
     <div class="container">
       <nav class="navbar navbar-expand-lg  fixed-top" id="nav">
         <div class="container">
-          <a class="navbar-brand" href="/"> Urban Bangla </a>
+          <a class="navbar-brand" href="/">
+            Urban Bangla 
+          </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -83,11 +87,15 @@
           </div>
             </li>
           </ul>
-            <form class="d-flex ms-auto">
+            <form class="d-flex ms-auto" 
+            method="get"
+            action="/search"
+            >
               <input
                 class="form-control me-sm-1"
                 type="text"
-                placeholder="Search"
+                name="search"
+                placeholder="Search by word..."
               />
               <button class="btn btn-secondary" type="submit">
                 Search
@@ -119,6 +127,9 @@
       
     </div>
     <br>
-    {% block content %} {% endblock content %}
+    <div id="mainPage">
+
+      {% block content %} {% endblock content %}
+    </div>
   </body>
 </html>

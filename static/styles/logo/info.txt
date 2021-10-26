@@ -1,0 +1,18 @@
+
+Hope you enjoy your new logo, here are the people that
+made your beautiful logo happen :)
+font name: Salsa-Regular
+font link: https://fonts.google.com/specimen/Salsa
+font author: John Vargas Beltrán
+font author site: https://www.behance.net/vargasbeltran
+
+
+icon designer: Alfredo @ IconsAlfredo.com
+icon designer link: /AlfredoCreates
+        
+
+fontColor: {"hex":"#3692FF"}
+bgColor: {"hex":"transparent"}
+iconColor: {"hex":"#3692FF"}
+
+      

@@ -1,0 +1,52 @@
+{% extends 'layout.html' %} {% block content %} {%for word in json_words%}
+<div class="container">
+  <div class="row">
+    <div id="card" class="col col-md-8 col-lg-6">
+      <div class="row">
+        <div class="col">
+          <div id="word">
+            {{word['word']}}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div id="definition">
+            {{ word['definition']}}
+          </div>
+        </div>
+      </div>
+      {% if(word['exp'] != '') %}
+      <div class="row">
+        <div class="col">
+          <div id="exp">
+            {{ word['exp']}}
+          </div>
+        </div>
+      </div>
+      {%endif%}
+      <br>
+      <div class="row">
+        <div class="col">
+          <div id="userHandle">
+            <p><i>Added by {{ word['userHandle']}} on <b>{{word['postedDate']['$date']}}</b></i></p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4 col-md-3">
+          <div id="upvote">
+            <p>Upvote : {{word['upvote']}}</p>
+          </div>
+        </div>
+        <div class="col-4 col-md-3">
+          <div id="upvote">
+            <p>Downvote : {{word['downvote']}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %} {% endblock content %}

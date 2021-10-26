@@ -93,6 +93,21 @@ def dash():
     print(colored(json_words,'yellow'))
     return render_template('adminDashboard.html',json_words=json_words)
 
+@app.route("/search", methods=['GET'])
+def search():
+    searchString=request.args['search'].lower()
+    print(colored(searchString, 'red'))
+    db.words.create_index([('word', "text" )])
+    # words=list(db.words.find({'word'.lower():searchString}))
+    words=list(db.words.find({'$text':{'$search': searchString}}))
+
+
+    json_words= json.loads(json.dumps(words, default=json_util.default))
+    print(colored(json_words,'yellow'))
+    return render_template('searchPage.html',json_words=json_words)
+
+
+
 @app.route("/adminDashboard/<action>/<word_id>/", methods=['POST'])
 def approve_word(action, word_id):
     oid = ObjectId(word_id)
