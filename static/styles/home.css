@@ -1,6 +1,6 @@
 body{
     background-color:  rgb(234, 238, 238);
-
+    margin-bottom: 5rem;
 }
 
     /* @media (max-width: 978px) {
@@ -144,3 +144,44 @@ padding:5px 0;
 {border: 0.773498px solid rgba(0, 0, 0, 0.5);
 }
 
+.paginationRow{
+    align-items: center;
+    margin-left: auto;
+    
+    margin-right: auto;
+    margin-top: 4rem;
+    color: white;
+    font-family: 'Rubik';
+    text-align: center;
+    font-weight: 700;
+}
+.paginationRow a{
+    color: inherit;
+    margin: auto;
+    font-size: 1rem;
+    text-decoration: none;
+    /* color: rgb(32, 128, 253); */
+    color: rgb(6, 43, 255);
+}
+.paginationRow a:hover{
+color: brown;
+}
+@media screen and (min-width: 980px) {
+    .paginationRow .row{    
+    margin: 0 20rem;
+    }
+@media screen and (min-width: 750px) {
+    .paginationRow .row{    
+    margin: 0 16rem;
+    }
+    }
+    @media screen and (min-width: 1400px) {
+        .paginationRow .row{
+    margin: 0 26rem;
+    }
+    }
+    @media screen and (min-width: 1920px) {
+    .paginationRow .row{
+    margin: 0 26rem;
+    }
+    }
