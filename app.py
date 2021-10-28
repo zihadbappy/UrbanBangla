@@ -3,6 +3,7 @@ from flask.helpers import url_for
 import traceback
 import sys
 import os
+from pymongo.message import update
 from termcolor import colored
 import dns
 import math
@@ -52,7 +53,7 @@ def get_words():
     # json_words= json.loads(json.dumps(words, default=json_util.default))
     
     # Pagination
-    limit=5
+    limit=20
     if request.args.get("page") is None:
         pageNo=1
     else:
@@ -77,6 +78,14 @@ def post_word():
         word=request.form['word']
         definition=request.form['def']
         exp=request.form['exp']
+        anonCheck=request.form.get('anonCheck')
+        print(colored(anonCheck,'red'))
+        userHandle=""
+        if(anonCheck=="anonTrue"):
+            userHandle= "Anonymous"
+        else:
+            userHandle= session["name"]
+
         # email= session['email']
         # userHandle=request.form['userHandle']
 
@@ -85,7 +94,7 @@ def post_word():
         "definition":definition,
         "exp":exp,
         "email": session["email"],
-        "userHandle": session["name"],
+        "userHandle": userHandle,
         "upvote":0,
         "downvote":0,
         "status":"pending",
@@ -112,9 +121,10 @@ def dash():
     print(colored(json_words,'yellow'))
     return render_template('adminDashboard.html',json_words=json_words)
 
-@app.route("/search/", methods=['GET'])
+@app.route("/search/"
+, methods=['GET'])
 def search():
-    searchString=request.args['search'].lower()
+    searchString=request.args.get('search').lower()
     print(colored(searchString, 'red'))
     # db.words.create_index([('word', "text" )])
     # # words=list(db.words.find({'word'.lower():searchString}))
@@ -126,23 +136,72 @@ def search():
 
     # return render_template('searchPage.html',json_words=json_words)
         # Pagination
-    limit=5
+    limit=6
     if request.args.get("page") is None:
         pageNo=1
     else:
         pageNo=int(request.args.get('page'))
     offset = (pageNo-1)* limit
 
-    word_order=list(db.words.find({'$text':{'$search': searchString}}).sort('upvote',pymongo.DESCENDING))
-    totalPages= math.ceil(len(word_order)/limit)
-    print(colored(word_order, 'blue'))
-    start_id=word_order[offset]['upvote']
-    outputWords= list(db.words.find({'upvote':{'$lte': start_id}}).sort('upvote',pymongo.DESCENDING).limit(limit))
+    word_order=list(db.words.aggregate([{
+        "$match": {
+            '$text':{'$search': searchString}
+        }
+    },
+    {
+        "$sort":{
+            "upvote": pymongo.DESCENDING
+        }
+    
+    }]))
+    if list(word_order) is not None:
+        start_id=word_order[offset]['_id']
 
-    next_page = '?page='+str(pageNo+1)
-    prev_page = '?page='+str(pageNo-1)
-    return render_template('home.html',json_words=outputWords, totalPages=totalPages,
-    pageNo=pageNo,  next_page=next_page, prev_page=prev_page)
+    # word_order=list(db.words.find(filter={'$text':{'$search': searchString}},sort=[('upvote',-1)]))
+        totalPages= math.ceil(len(word_order)/limit)
+        outputWords= list(db.words.aggregate([{
+            "$match": {
+                '$text':{'$search': searchString}
+            }
+        },
+        {
+            "$sort":{
+                "upvote":pymongo.DESCENDING
+            }
+        },
+        # {
+        #     "$project":{
+        #         '_id':1,
+        #         'word':1,
+        #         'definition':1,
+        #         'exp':1,
+        #         'email':1,
+        #         'userHandle':1,
+        #         'upvote':1,
+        #         'downvote':1,
+        #         'status':1,
+        #         'postedDate':1,
+        #         "newId":{"$lte":["$_id",start_id]}
+        #     }
+        # },
+        {
+            "$limit": limit
+        }
+        # {"$project":{
+        #     'upvote':{"$lte": ["$upvote",start_id]}
+        # }
+        # }
+        ]))
+
+        print(colored(outputWords, 'blue'))
+        # outputWords= list(db.words.find({'upvote':{'$lte': start_id}}).sort('upvote',pymongo.DESCENDING).limit(limit))
+
+        next_page = '?search='+searchString+'?page='+str(pageNo+1)
+        prev_page = '?search='+searchString+'?page='+str(pageNo-1)
+        return render_template('home.html',json_words=outputWords, totalPages=totalPages,
+        pageNo=pageNo,  next_page=next_page, prev_page=prev_page)
+    else:
+        return "No match found"
 
 
 
