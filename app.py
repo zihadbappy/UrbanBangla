@@ -53,7 +53,7 @@ def get_words():
     # json_words= json.loads(json.dumps(words, default=json_util.default))
     
     # Pagination
-    limit=20
+    limit=10
     if request.args.get("page") is None:
         pageNo=1
     else:
@@ -62,9 +62,15 @@ def get_words():
 
     word_order=list(db.words.find({"status":"approved"}).sort('upvote',pymongo.DESCENDING))
     totalPages= math.ceil(len(word_order)/limit)
-    print(colored(word_order, 'blue'))
     start_id=word_order[offset]['upvote']
-    outputWords= list(db.words.find({'upvote':{'$lte': start_id}}).sort('upvote',pymongo.DESCENDING).limit(limit))
+    outputWords= list(db.words.find({
+        "$and":[
+        {'status':"approved"},
+        {'upvote':{'$lte': start_id}}
+        ]
+    })
+    .sort('upvote',pymongo.DESCENDING).limit(limit))
+    print(colored(len(outputWords), 'blue'))
 
     next_page = '?page='+str(pageNo+1)
     prev_page = '?page='+str(pageNo-1)
