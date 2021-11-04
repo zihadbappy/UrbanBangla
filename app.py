@@ -38,45 +38,38 @@ except pymongo.errors.ConnectionFailure as e:
 
 @app.route("/")
 def get_words():
-    # aggregatedCur = db.words.aggregate(
-    #     [
-    #         {
-    #         '$project':{
-    #         'date':{'$toDate': "$postedDate" } }
-    #         }
-    #     ]
-    # )
-    # aggregatedList = list(aggregatedCur)
-    # print(colored(aggregatedList,'yellow'))    
-
-    # words=list(db.words.find({"status":"approved"}))
-    # json_words= json.loads(json.dumps(words, default=json_util.default))
     
     # Pagination
-    limit=10
+    limit=8
     if request.args.get("page") is None:
         pageNo=1
     else:
         pageNo=int(request.args.get('page'))
     offset = (pageNo-1)* limit
 
-    word_order=list(db.words.find({"status":"approved"}).sort('upvote',pymongo.DESCENDING))
+    word_order=list(db.words.find({"status":"approved"}))
     totalPages= math.ceil(len(word_order)/limit)
-    start_id=word_order[offset]['upvote']
-    outputWords= list(db.words.find({
-        "$and":[
+
+    outputWords= list(db.words.aggregate([
+    {
+    "$sort":{ "upvote": pymongo.DESCENDING,
+    "_id": pymongo.DESCENDING}
+    },
+    {"$match":{"$and":[
         {'status':"approved"},
-        {'upvote':{'$lte': start_id}}
-        ]
-    })
-    .sort('upvote',pymongo.DESCENDING).limit(limit))
+        ]}
+    },
+    {"$skip": offset},
+    {"$limit":limit}
+    ]))
     print(colored(len(outputWords), 'blue'))
+    
 
     next_page = '?page='+str(pageNo+1)
     prev_page = '?page='+str(pageNo-1)
     return render_template('home.html',json_words=outputWords, totalPages=totalPages,
     pageNo=pageNo,  next_page=next_page, prev_page=prev_page)
-    # return json.dumps(words, default=json_util.default)
+    
 
 @app.route("/addword", methods=['POST'])
 def post_word():
@@ -92,10 +85,6 @@ def post_word():
         else:
             userHandle= session["name"]
 
-        # email= session['email']
-        # userHandle=request.form['userHandle']
-
-        # print(colored("word={} , definition={} , exp={} , email={}, userHandle".format(word, definition, exp, email, userHandle), 'red'))
         json= {"word":word,
         "definition":definition,
         "exp":exp,
@@ -127,22 +116,11 @@ def dash():
     print(colored(json_words,'yellow'))
     return render_template('adminDashboard.html',json_words=json_words)
 
-@app.route("/search/"
-, methods=['GET'])
+@app.route("/search/", methods=['GET'])
 def search():
     searchString=request.args.get('search').lower()
-    print(colored(searchString, 'red'))
-    # db.words.create_index([('word', "text" )])
-    # # words=list(db.words.find({'word'.lower():searchString}))
-    # words=list(db.words.find({'$text':{'$search': searchString}}))
-
-
-    # json_words= json.loads(json.dumps(words, default=json_util.default))
-    # print(colored(json_words,'yellow'))
-
-    # return render_template('searchPage.html',json_words=json_words)
-        # Pagination
-    limit=6
+    # Pagination
+    limit=2
     if request.args.get("page") is None:
         pageNo=1
     else:
@@ -160,48 +138,24 @@ def search():
         }
     
     }]))
-    if list(word_order) is not None:
-        start_id=word_order[offset]['_id']
-
+    if word_order is not None:
     # word_order=list(db.words.find(filter={'$text':{'$search': searchString}},sort=[('upvote',-1)]))
         totalPages= math.ceil(len(word_order)/limit)
-        outputWords= list(db.words.aggregate([{
-            "$match": {
-                '$text':{'$search': searchString}
-            }
-        },
-        {
-            "$sort":{
-                "upvote":pymongo.DESCENDING
-            }
-        },
-        # {
-        #     "$project":{
-        #         '_id':1,
-        #         'word':1,
-        #         'definition':1,
-        #         'exp':1,
-        #         'email':1,
-        #         'userHandle':1,
-        #         'upvote':1,
-        #         'downvote':1,
-        #         'status':1,
-        #         'postedDate':1,
-        #         "newId":{"$lte":["$_id",start_id]}
-        #     }
-        # },
-        {
-            "$limit": limit
-        }
-        # {"$project":{
-        #     'upvote':{"$lte": ["$upvote",start_id]}
-        # }
-        # }
-        ]))
-
-        print(colored(outputWords, 'blue'))
-        # outputWords= list(db.words.find({'upvote':{'$lte': start_id}}).sort('upvote',pymongo.DESCENDING).limit(limit))
-
+        outputWords= list(db.words.aggregate([
+    {"$match":{
+        "$and":[
+        {'status':"approved"},
+        {'$text':{'$search': searchString}}
+        ]}
+    },
+    {
+    "$sort":{ "upvote": pymongo.DESCENDING,
+    "_id": pymongo.DESCENDING}
+    },
+    {"$skip": offset},
+    {"$limit":limit}
+    ]))
+        # print(colored(outputWords, 'blue'))
         next_page = '?search='+searchString+'?page='+str(pageNo+1)
         prev_page = '?search='+searchString+'?page='+str(pageNo-1)
         return render_template('home.html',json_words=outputWords, totalPages=totalPages,
