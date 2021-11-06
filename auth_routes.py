@@ -4,6 +4,8 @@ from flask.templating import render_template
 from termcolor import colored
 from app import app
 import os
+import pymongo
+import certifi
 import pathlib
 import requests
 from flask import Flask, session,flash, abort, redirect, request
@@ -13,6 +15,9 @@ from pip._vendor import cachecontrol
 import google.auth.transport.requests
 
 # app.secret_key = "mySecretKeyLol"
+ca = certifi.where()
+client = pymongo.MongoClient(os.getenv('MONGO_URI'), tlsCAFile=ca)
+db=client.UrbanBangla
 
 GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
 
@@ -51,8 +56,6 @@ def userlogin():
 @app.route('/user/callback', methods=['GET'])
 def callback():
     flow.fetch_token(authorization_response=request.url)
-    print(colored(session["state"],'red'))
-    print(colored(request.args["state"],'red'))
     if not session["state"] == request.args["state"]:
         abort(500)  # State does not match!
 
@@ -66,12 +69,28 @@ def callback():
         request=token_request,
         audience=GOOGLE_CLIENT_ID
     )
-
+    print(colored(id_info,'yellow'))
+    # adding user data to the session
     session["google_id"] = id_info.get("sub")
     session["name"] = id_info.get("name")
     session["email"] = id_info.get("email")
     session["picture"] = id_info.get("picture")
-    print(colored(id_info,'red'))
+    session['email_verified']=id_info.get('email_verified')
+
+    # saving user data to db
+    if list(db.users.find_one({"google_id":id_info.get('sub')})) is None:
+        userData_json={
+            "name":id_info.get('name'),
+            "email":id_info.get('email'),
+            'google_id': id_info.get('sub'),
+            'picture': id_info.get('picture'),
+            'email_verified':id_info.get('email_verified'),
+            'words_author': [],
+            'upvotes': [],
+            'downvotes':[]
+        }
+        print(colored(list(db.users.find({"google_id":id_info.get('sub')})),'red'))
+        # db.users.insert_one(userData_json)
     return redirect("/user/protected_area")
 
 @app.route('/user/logout', methods=['GET'])
@@ -82,5 +101,8 @@ def userlogout():
 @app.route('/user/protected_area', methods=['GET'])
 @login_is_required
 def protected_area():
-    flash("logged in successfully")
-    return redirect('/addword')
+        flash("logged in successfully")
+        if 'url' not in session:
+            return redirect('/')
+        else:
+            return redirect(session['url'])

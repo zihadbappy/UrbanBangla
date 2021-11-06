@@ -28,17 +28,17 @@ from auth_routes import login_is_required
 ca = certifi.where()
 logging.basicConfig(level=logging.DEBUG)
 
-try:
-    client = pymongo.MongoClient(os.getenv('MONGO_URI'), tlsCAFile=ca)
-    db=client.UrbanBangla
-except pymongo.errors.ConnectionFailure as e:
-    print(colored(e, 'red'))
+client = pymongo.MongoClient(os.getenv('MONGO_URI'), tlsCAFile=ca)
+db=client.UrbanBangla
+# except pymongo.errors.ConnectionFailure as e:
+#     print(colored(e, 'red'))
 
-# words =[{ "id": "0", 'word': 'nice lagsa', 'definition': "You're looking nice"}]
+
 
 @app.route("/")
 def get_words():
     
+    session['url']='/'
     # Pagination
     limit=8
     if request.args.get("page") is None:
@@ -73,12 +73,14 @@ def get_words():
 
 @app.route("/addword", methods=['POST'])
 def post_word():
+    session['url']='/addword'
+    # Gather necessary data for db
     try:
         word=request.form['word']
         definition=request.form['def']
         exp=request.form['exp']
         anonCheck=request.form.get('anonCheck')
-        print(colored(anonCheck,'red'))
+        authorID=session['google_id']
         userHandle=""
         if(anonCheck=="anonTrue"):
             userHandle= "Anonymous"
@@ -93,16 +95,70 @@ def post_word():
         "upvote":0,
         "downvote":0,
         "status":"pending",
+        'authorID':authorID,
         "postedDate": datetime.now()
         }
 
+        # insert word to words table 
         print(colored(json, 'yellow'))
         db.words.insert_one(json)
-        # return jsonify(result={"status": 200})
+
+        # get the word id to ref it to the author
+        word_id=list(db.words.find(filter={}, sort=[('_id',-1)]).limit(1))
+        print(colored(word_id[0]['_id'], 'red'))
+
+        # append the word to the words_author array in users table
+        db.users.update(
+            {'google_id':authorID},
+            {'$push':{'words_author':word_id[0]['_id']}}
+        )
+
         return redirect("/addword")
     except:
         traceback.print_exc(file=sys.stdout)
 
+
+@app.route('/upvote/<word_id>', methods=['POST'])
+def upvote_word(word_id):
+    if 'google_id' not in session:
+        return redirect('/user')
+    else:
+        session['url']='/upvote/'+word_id
+        print(colored(word_id,'green'))
+
+        print(colored(list(db.words.find({"_id":{"$eq":ObjectId(word_id)}})),'red'))
+        # update upvote in words table
+        db.words.update_one(
+                {"_id":{"$eq":ObjectId(word_id)}},
+                {'$inc': {"upvote":1}})
+
+        # add upvote to the user upvote array in users table
+        db.users.update(
+                {'google_id':session['google_id']},
+                {'$addToSet':{'upvotes':word_id}}
+            )
+        return redirect('/')
+
+@app.route('/downvote/<word_id>', methods=['POST'])
+def downvote_word(word_id):
+    if 'google_id' not in session:
+        return redirect('/user')
+    else:
+        session['url']='/downvote/'+word_id
+        print(colored(word_id,'green'))
+
+        print(colored(list(db.words.find({"_id":{"$eq":ObjectId(word_id)}})),'red'))
+        # update downvote in words table
+        db.words.update_one(
+                {"_id":{"$eq":ObjectId(word_id)}},
+                {'$inc': {"downvote":1}})
+
+        # add downvote to the user downvote array in users table
+        db.users.update(
+                {'google_id':session['google_id']},
+                {'$addToSet':{'downvotes':word_id}}
+            )
+        return redirect('/')
 
 @app.route("/addword", methods=['GET'])
 @login_is_required
