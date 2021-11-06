@@ -39,14 +39,16 @@
         <div class="col-4 col-md-3">
           <div id="upvote">
             <form action="/upvote/{{word['_id']}}" method="POST">
-             <button>+1</button> Upvote : {{word['upvote']}}
+             <button style="border: none; all: unset;"><i class="far fa-thumbs-up updown" style="font-size: 2rem;"></i>
+             </button>&nbsp;&nbsp;{{word['upvote']}}
             </form>
           </div>
         </div>
         <div class="col-4 col-md-3">
-          <div id="upvote">
+          <div id="downvote">
             <form action="/downvote/{{word['_id']}}" method="POST">
-              <button>-1</button> Downvote : {{word['downvote']}}
+              <button style="border: none; all: unset;"><i class="far fa-thumbs-down updown" style="font-size: 2rem;"></i>
+              </button>&nbsp;&nbsp;{{word['downvote']}}
              </form>
           </div>
         </div>

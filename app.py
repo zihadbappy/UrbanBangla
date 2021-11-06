@@ -1,3 +1,4 @@
+import re
 from flask import Flask, flash, jsonify, request, render_template,redirect, session
 from flask.helpers import url_for
 import traceback
@@ -37,8 +38,10 @@ db=client.UrbanBangla
 
 @app.route("/")
 def get_words():
-    
-    session['url']='/'
+    if request.args.get('page') is not None:
+        session['url']='/?page='+request.args.get('page')
+    else: session['url']='/'
+
     # Pagination
     limit=8
     if request.args.get("page") is None:
@@ -49,21 +52,67 @@ def get_words():
 
     word_order=list(db.words.find({"status":"approved"}))
     totalPages= math.ceil(len(word_order)/limit)
+    outputWords=[]
+    # when the user is not logged in
+    if 'google_id' not in session:
+        outputWords= list(db.words.aggregate([
+        {
+        "$sort":{ "upvote": pymongo.DESCENDING,
+        "_id": pymongo.DESCENDING}
+        },
+        {"$match":{"$and":[
+            {'status':"approved"},
+            ]}
+        },
+        {"$skip": offset},
+        {"$limit":limit}
+        ]))
+        print(colored(len(outputWords), 'blue'))
+    # user logged in
+    else:
+        # get user upvotes and downvotes list
+        user_upvotes= list(db.users.find({}, {'_id':0, 'upvotes':1}))[0]['upvotes']
+        user_downvotes= list(db.users.find({}, {'_id':0, 'downvotes':1}))[0]['downvotes']
 
-    outputWords= list(db.words.aggregate([
-    {
-    "$sort":{ "upvote": pymongo.DESCENDING,
-    "_id": pymongo.DESCENDING}
-    },
-    {"$match":{"$and":[
-        {'status':"approved"},
-        ]}
-    },
-    {"$skip": offset},
-    {"$limit":limit}
-    ]))
-    print(colored(len(outputWords), 'blue'))
-    
+        def status(_id):
+            print(colored(_id, 'red'))
+            print(colored(_id in user_upvotes, 'red'))
+            return _id in user_upvotes
+
+        outputWords=list(db.words.aggregate([   
+        {
+        "$sort":{ "upvote": pymongo.DESCENDING,
+        "_id": pymongo.DESCENDING}
+        },
+        {"$match":{"$and":[
+            {'status':"approved"},
+            ]}
+        },
+        {"$skip": offset},
+        {"$limit":limit}
+        ]))
+
+        word_id_collection=[]
+        upvote_status=[]
+        downvote_status=[]
+        for x in outputWords:
+            word_id_collection.append(str(x['_id']))
+
+
+        print(colored(word_id_collection, 'blue'))
+        print(colored(user_upvotes,'white'))
+        for x in word_id_collection:
+            if x in user_upvotes:
+                upvote_status.append(True)
+            else:
+                upvote_status.append(False)
+
+        for idx, val in enumerate(outputWords):
+            val['upvote_status']= upvote_status[idx]
+            
+        print(colored(outputWords, 'green'))
+
+        print(colored(upvote_status, 'yellow'))
 
     next_page = '?page='+str(pageNo+1)
     prev_page = '?page='+str(pageNo-1)
@@ -123,7 +172,6 @@ def upvote_word(word_id):
     if 'google_id' not in session:
         return redirect('/user')
     else:
-        session['url']='/upvote/'+word_id
         print(colored(word_id,'green'))
 
         print(colored(list(db.words.find({"_id":{"$eq":ObjectId(word_id)}})),'red'))
@@ -137,7 +185,7 @@ def upvote_word(word_id):
                 {'google_id':session['google_id']},
                 {'$addToSet':{'upvotes':word_id}}
             )
-        return redirect('/')
+        return redirect(session['url'])
 
 @app.route('/downvote/<word_id>', methods=['POST'])
 def downvote_word(word_id):
