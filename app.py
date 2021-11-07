@@ -98,21 +98,20 @@ def get_words():
         for x in outputWords:
             word_id_collection.append(str(x['_id']))
 
-
-        print(colored(word_id_collection, 'blue'))
-        print(colored(user_upvotes,'white'))
         for x in word_id_collection:
             if x in user_upvotes:
                 upvote_status.append(True)
             else:
                 upvote_status.append(False)
+            if x in user_downvotes:
+                downvote_status.append(True)
+            else:
+                downvote_status.append(False)
 
         for idx, val in enumerate(outputWords):
             val['upvote_status']= upvote_status[idx]
+            val['downvote_status']= downvote_status[idx]
             
-        print(colored(outputWords, 'green'))
-
-        print(colored(upvote_status, 'yellow'))
 
     next_page = '?page='+str(pageNo+1)
     prev_page = '?page='+str(pageNo-1)
@@ -172,9 +171,6 @@ def upvote_word(word_id):
     if 'google_id' not in session:
         return redirect('/user')
     else:
-        print(colored(word_id,'green'))
-
-        print(colored(list(db.words.find({"_id":{"$eq":ObjectId(word_id)}})),'red'))
         # update upvote in words table
         db.words.update_one(
                 {"_id":{"$eq":ObjectId(word_id)}},
@@ -192,10 +188,7 @@ def downvote_word(word_id):
     if 'google_id' not in session:
         return redirect('/user')
     else:
-        session['url']='/downvote/'+word_id
-        print(colored(word_id,'green'))
 
-        print(colored(list(db.words.find({"_id":{"$eq":ObjectId(word_id)}})),'red'))
         # update downvote in words table
         db.words.update_one(
                 {"_id":{"$eq":ObjectId(word_id)}},
@@ -206,7 +199,7 @@ def downvote_word(word_id):
                 {'google_id':session['google_id']},
                 {'$addToSet':{'downvotes':word_id}}
             )
-        return redirect('/')
+        return redirect(session['url'])
 
 @app.route("/addword", methods=['GET'])
 @login_is_required

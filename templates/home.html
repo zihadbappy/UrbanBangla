@@ -37,20 +37,39 @@
       </div>
       <div class="row">
         <div class="col-4 col-md-3">
+          {%if word['upvote_status']==True%}
+          <div id="upvote">
+            <form action="/upvote/{{word['_id']}}" method="POST">
+             <button style="border: none; all: unset;"><i class="fas fa-thumbs-up updown" style="font-size: 2rem;"></i>
+             </button>&nbsp;&nbsp;{{word['upvote']}}
+            </form>
+          </div>
+          {%else%}
           <div id="upvote">
             <form action="/upvote/{{word['_id']}}" method="POST">
              <button style="border: none; all: unset;"><i class="far fa-thumbs-up updown" style="font-size: 2rem;"></i>
              </button>&nbsp;&nbsp;{{word['upvote']}}
             </form>
           </div>
+          {%endif%}
         </div>
         <div class="col-4 col-md-3">
+          {%if word['downvote_status']==True%}
+          <div id="downvote">
+            <form action="/downvote/{{word['_id']}}" method="POST">
+              <button style="border: none; all: unset;"><i class="fas fa-thumbs-down updown" style="font-size: 2rem;"></i>
+              </button>&nbsp;&nbsp;{{word['downvote']}}
+             </form>
+          </div>
+          {%else%}
           <div id="downvote">
             <form action="/downvote/{{word['_id']}}" method="POST">
               <button style="border: none; all: unset;"><i class="far fa-thumbs-down updown" style="font-size: 2rem;"></i>
               </button>&nbsp;&nbsp;{{word['downvote']}}
              </form>
           </div>
+          {%endif%}
+
         </div>
       </div>
     </div>
