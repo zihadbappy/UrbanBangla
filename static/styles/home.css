@@ -136,7 +136,13 @@ padding:5px 0;
 .updown:hover{
     color:brown;
 }
- 
+
+#profilepic{
+    width: 40%;
+    border-radius: 50%;
+}
+
+
 #upvote
 {
 }

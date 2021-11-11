@@ -75,9 +75,10 @@ def callback():
     session["email"] = id_info.get("email")
     session["picture"] = id_info.get("picture")
     session['email_verified']=id_info.get('email_verified')
+    print(colored(list(db.users.find({"google_id":id_info.get('sub')})),'red'))
 
     # saving user data to db
-    if list(db.users.find_one({"google_id":id_info.get('sub')})) is None:
+    if list(db.users.find({"google_id":id_info.get('sub')})) is None:
         userData_json={
             "name":id_info.get('name'),
             "email":id_info.get('email'),

@@ -65,6 +65,7 @@
               </div>
               </li>
             </ul>
+            {% if not session.get('google_id')%}
             <ul class="navbar-nav ms-auto">
               <li class="nav-item" >
                 <div class="row">
@@ -87,6 +88,30 @@
           </div>
             </li>
           </ul>
+          {%else%}
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item" >
+              <div class="row">
+                <div class="col">
+              <a class="nav-link active" href="/user/logout"
+              >
+              <div class="row">
+                <div class="col">
+                  <img src="{{session['picture']}}" alt="" id="profilepic">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+              Logout
+            </div>
+          </div>
+              <span class="visually-hidden">(current)</span>
+            </a>
+          </div>
+        </div>
+          </li>
+        </ul>
+          {%endif%}
             <form class="d-flex ms-auto" 
             method="get"
             action="/search"
