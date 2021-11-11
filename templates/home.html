@@ -39,7 +39,7 @@
         <div class="col-4 col-md-3">
           {%if word['upvote_status']==True%}
           <div id="upvote">
-            <form action="/upvote/{{word['_id']}}" method="POST">
+            <form action="/undo_upvote/{{word['_id']}}" method="POST">
              <button style="border: none; all: unset;"><i class="fas fa-thumbs-up updown" style="font-size: 2rem;"></i>
              </button>&nbsp;&nbsp;{{word['upvote']}}
             </form>
@@ -56,7 +56,7 @@
         <div class="col-4 col-md-3">
           {%if word['downvote_status']==True%}
           <div id="downvote">
-            <form action="/downvote/{{word['_id']}}" method="POST">
+            <form action="/undo_downvote/{{word['_id']}}" method="POST">
               <button style="border: none; all: unset;"><i class="fas fa-thumbs-down updown" style="font-size: 2rem;"></i>
               </button>&nbsp;&nbsp;{{word['downvote']}}
              </form>

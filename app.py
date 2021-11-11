@@ -183,6 +183,43 @@ def upvote_word(word_id):
             )
         return redirect(session['url'])
 
+
+# Undo upvote on click of the like button
+# logged in
+@app.route('/undo_upvote/<word_id>', methods=['POST'])
+def undo_upvote(word_id):
+    # if 'google_id' not in session:
+    #     return redirect('/user')
+    # else:
+        # update upvote in words table
+        db.words.update_one(
+                {"_id":{"$eq":ObjectId(word_id)}},
+                {'$inc': {"upvote":-1}})
+
+        # add upvote to the user upvote array in users table
+        db.users.update(
+                {'google_id':session['google_id']},
+                {'$pull':{'upvotes':word_id}}
+            )
+        return redirect(session['url'])
+
+@app.route('/undo_downvote/<word_id>', methods=['POST'])
+def undo_downvote(word_id):
+    # if 'google_id' not in session:
+    #     return redirect('/user')
+    # else:
+        # update upvote in words table
+        db.words.update_one(
+                {"_id":{"$eq":ObjectId(word_id)}},
+                {'$inc': {"downvote":-1}})
+
+        # add upvote to the user upvote array in users table
+        db.users.update(
+                {'google_id':session['google_id']},
+                {'$pull':{'downvotes':word_id}}
+            )
+        return redirect(session['url'])
+
 @app.route('/downvote/<word_id>', methods=['POST'])
 def downvote_word(word_id):
     if 'google_id' not in session:
