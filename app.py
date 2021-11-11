@@ -243,11 +243,10 @@ def downvote_word(word_id):
 def word_form():
     return render_template('addword.html')
 
-@app.route("/adminDashboard", methods=['GET'])
+@app.route("/adminDashboard/"+os.getenv('ADMIN_ROUTE'), methods=['GET'])
 def dash():
     words=list(db.words.find({'status':'pending'}))
     json_words= json.loads(json.dumps(words, default=json_util.default))
-    print(colored(json_words,'yellow'))
     return render_template('adminDashboard.html',json_words=json_words)
 
 @app.route("/search/", methods=['GET'])

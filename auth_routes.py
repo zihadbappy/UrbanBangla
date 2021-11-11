@@ -14,7 +14,6 @@ from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests
 
-# app.secret_key = "mySecretKeyLol"
 ca = certifi.where()
 client = pymongo.MongoClient(os.getenv('MONGO_URI'), tlsCAFile=ca)
 db=client.UrbanBangla
