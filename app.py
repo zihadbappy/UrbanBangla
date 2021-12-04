@@ -71,9 +71,9 @@ def get_words():
     # user logged in
     else:
         # get user upvotes and downvotes list
-        user_upvotes= list(db.users.find({}, {'_id':0, 'upvotes':1}))[0]['upvotes']
-        user_downvotes= list(db.users.find({}, {'_id':0, 'downvotes':1}))[0]['downvotes']
-
+        user_upvotes= list(db.users.find({'google_id':session['google_id']}, {'upvotes':1}))[0]['upvotes']
+        user_downvotes= list(db.users.find({'google_id':session['google_id']}, {'downvotes':1}))[0]['downvotes']
+        # print(colored(list(db.users.find({'google_id':session['google_id']})),'red'))
         def status(_id):
             print(colored(_id, 'red'))
             print(colored(_id in user_upvotes, 'red'))
@@ -176,6 +176,7 @@ def upvote_word(word_id):
                 {"_id":{"$eq":ObjectId(word_id)}},
                 {'$inc': {"upvote":1}})
 
+        print(colored(session['google_id'], 'red'))
         # add upvote to the user upvote array in users table
         db.users.update(
                 {'google_id':session['google_id']},

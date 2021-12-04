@@ -75,10 +75,9 @@ def callback():
     session["email"] = id_info.get("email")
     session["picture"] = id_info.get("picture")
     session['email_verified']=id_info.get('email_verified')
-    print(colored(list(db.users.find({"google_id":id_info.get('sub')})),'red'))
 
     # saving user data to db
-    if list(db.users.find({"google_id":id_info.get('sub')})) is None:
+    if not list(db.users.find({"google_id":id_info.get('sub')})):
         userData_json={
             "name":id_info.get('name'),
             "email":id_info.get('email'),
@@ -90,7 +89,7 @@ def callback():
             'downvotes':[]
         }
         print(colored(list(db.users.find({"google_id":id_info.get('sub')})),'red'))
-        # db.users.insert_one(userData_json)
+        db.users.insert_one(userData_json)
     return redirect("/user/protected_area")
 
 @app.route('/user/logout', methods=['GET'])
