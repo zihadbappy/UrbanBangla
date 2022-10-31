@@ -4,7 +4,7 @@ from flask.helpers import url_for
 import traceback
 import sys
 import os
-from pymongo.message import update
+# from pymongo.message import update
 from termcolor import colored
 import dns
 import math
